@@ -1,30 +1,18 @@
 import {
   PrimaryGeneratedColumn,
-  Column,
-  Entity,
-  CreateDateColumn,
   UpdateDateColumn,
+  CreateDateColumn,
+  ManyToOne,
+  Entity,
+  OneToMany,
 } from 'typeorm';
+import { Customer } from './customer.entity';
+import { OrderItem } from './order-item.entity';
 
 @Entity()
-export class Product {
+export class Order {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ type: 'varchar', length: 255, unique: true })
-  name: string;
-
-  @Column({ type: 'text' })
-  description: string;
-
-  @Column({ type: 'int' })
-  price: number;
-
-  @Column({ type: 'int' })
-  stock: number;
-
-  @Column({ type: 'varchar' })
-  image: string;
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -37,4 +25,10 @@ export class Product {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updateAt: Date;
+
+  @ManyToOne(() => Customer, (customer) => customer.orders)
+  customer: Customer;
+
+  @OneToMany(() => OrderItem, (item) => item.order)
+  items: OrderItem[];
 }
